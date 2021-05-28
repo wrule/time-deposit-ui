@@ -9,11 +9,12 @@ export default class ViewHome extends Vue {
   public render(): VNode {
     return (
       <div class={style.view}>
-        <img src={logo} />
+        <a-button type="primary">你好，世界</a-button>
+        {/* <img src={logo} />
         <br />
         <span>这是我的主页</span>
         <br />
-        <XHello />
+        <XHello /> */}
       </div>
     );
   }
