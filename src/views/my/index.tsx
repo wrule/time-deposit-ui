@@ -4,27 +4,26 @@ import style from './index.module.scss';
 
 @Component
 export default class ViewMy extends Vue {
-
   private get autoColumns() {
     return [
       {
-        key: 'time0',
+        key: 'type',
         title: '币种',
       },
       {
-        key: 'timea',
+        key: 'amount',
         title: '金额',
       },
       {
-        key: 'time1',
+        key: 'createTime',
         title: '定存时间',
       },
       {
-        key: 'time2',
+        key: 'expireDate',
         title: '到期时间',
       },
       {
-        key: 'time3',
+        key: 'valid',
         title: '是否有效',
       },
       {

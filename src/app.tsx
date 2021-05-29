@@ -15,7 +15,12 @@ export default class App extends Vue {
           <a-layout>
             <a-layout-sider class={style.sider}>
               <a-menu class={style.menu}>
-                <a-menu-item>ETH业务</a-menu-item>
+                <a-menu-item>
+                  <router-link to={{ name: 'my' }}>我的</router-link>
+                </a-menu-item>
+                <a-menu-item>
+                  <router-link to={{ name: 'eth' }}>ETH业务</router-link>
+                </a-menu-item>
                 <a-menu-item>山寨币业务</a-menu-item>
                 <a-menu-item>DEFI业务</a-menu-item>
                 <a-menu-item>JMAO Token</a-menu-item>
