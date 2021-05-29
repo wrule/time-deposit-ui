@@ -23,6 +23,11 @@ const routes: Array<RouteConfig> = [
     name: 'eth',
     component: () => import('@/views/eth'),
   },
+  {
+    path: '/my',
+    name: 'my',
+    component: () => import('@/views/my'),
+  },
 ]
 
 const router = new VueRouter({
