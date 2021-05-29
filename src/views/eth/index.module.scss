@@ -1,0 +1,13 @@
+.view {
+  .form {
+    width: 400px;
+    .item {
+      width: 100%;
+    }
+    .control {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+}

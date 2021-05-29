@@ -8,24 +8,29 @@ import DepositJson from './Deposit.json';
 
 @Component
 export default class ViewHome extends Vue {
-
-  private mounted() {
+  private async handleClick() {
     const web3 = new Web3('ws://127.0.0.1:7545');
-    console.log(DepositJson);
-    const depositContract = new web3.eth.Contract(DepositJson.abi as any, '0x3024448A916eEc38EB7B9cD3a458306D3C4a4d93');
-    const rst = depositContract.methods.saveETH(0);
+    const depositContract = new web3.eth.Contract(
+      DepositJson.abi as any,
+      '0x3d1405001628C60807Ec54Fcb8304B0Bb42AD7Dc',
+      {
+        from: '0x6E9Aeb9f30b3a45cBb426D583c18EcD0F4b1BEd5',
+        gas: 1e6,
+      },
+    );
+    const rst = await depositContract.methods.saveETH(0).send({
+      value: web3.utils.toWei('50'),
+    });
     console.log(rst);
+    // rst = await web3.eth.getAccounts();
+    // rst = web3.eth.defaultAccount;
+    // console.log(rst);
   }
 
   public render(): VNode {
     return (
       <div class={style.view}>
-        <a-button type="primary">你好，世界</a-button>
-        {/* <img src={logo} />
-        <br />
-        <span>这是我的主页</span>
-        <br />
-        <XHello /> */}
+        <a-button onClick={this.handleClick} type="primary">点我定存</a-button>
       </div>
     );
   }
