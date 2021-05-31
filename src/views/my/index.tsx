@@ -14,9 +14,9 @@ export default class ViewMy extends Vue {
   private list: any[] = [];
 
   private async updateTable() {
-    console.log(this.depositContract);
     const rst = await this.depositContract.methods.getMyDepositSlips().call();
     this.list = rst;
+    console.log(this.list);
   }
 
   private mounted() {
@@ -81,6 +81,16 @@ export default class ViewMy extends Vue {
     this.updateTable();
   }
 
+  private handleRedemptionClick(index: number) {
+    this.redemption(index);
+  }
+
+  private async redemption(index: number) {
+    const rst = await this.depositContract.methods.redemption(index).call();
+    console.log(rst);
+    // this.updateTable();
+  }
+
   public render(): VNode {
     return (
       <div class={style.view}>
@@ -99,13 +109,16 @@ export default class ViewMy extends Vue {
               return <span>{Moment(Number(value) * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>;
             },
             valid: (value: any) => {
-              return <span>{value ? '有效' : '无效'}</span>;
+              return value ? <a-button size="small">有效</a-button> :
+                <a-button size="small" disabled>无效</a-button>;
             },
-            opts: (value: any) => {
-              return <span>
-                <a href="javascript:;">赎回</a>
-                {/* <a-button type="primary" size="small">赎回</a-button> */}
-              </span>;
+            opts: (value: any, row: any, index: number) => {
+              return <a-button
+                type="link"
+                size="small"
+                onClick={() => this.handleRedemptionClick(index)}>
+                赎回
+              </a-button>;
             },
           }}>
         </a-table>
