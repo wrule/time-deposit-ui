@@ -21,7 +21,9 @@ export default class App extends Vue {
                 <a-menu-item>
                   <router-link to={{ name: 'eth' }}>ETH业务</router-link>
                 </a-menu-item>
-                <a-menu-item>山寨币业务</a-menu-item>
+                <a-menu-item>
+                  <router-link to={{ name: 'erc20' }}>山寨币业务</router-link>
+                </a-menu-item>
                 <a-menu-item>DEFI业务</a-menu-item>
                 <a-menu-item>JMAO Token</a-menu-item>
               </a-menu>

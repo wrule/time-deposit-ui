@@ -24,6 +24,11 @@ const routes: Array<RouteConfig> = [
     component: () => import('@/views/eth'),
   },
   {
+    path: '/erc20',
+    name: 'erc20',
+    component: () => import('@/views/erc20'),
+  },
+  {
     path: '/my',
     name: 'my',
     component: () => import('@/views/my'),
