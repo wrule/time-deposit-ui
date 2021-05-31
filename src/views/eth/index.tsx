@@ -3,7 +3,7 @@ import { VNode } from 'vue';
 import style from './index.module.scss';
 import Antd from 'ant-design-vue';
 import Web3 from 'web3';
-import DepositJson from '../home/Deposit.json';
+import DepositJson from '@/abi/Deposit.json';
 
 interface Form {
   amount: number | null;
@@ -39,9 +39,9 @@ export default class ViewETH extends Vue {
     const web3 = new Web3('ws://127.0.0.1:7545');
     const depositContract = new web3.eth.Contract(
       DepositJson.abi as any,
-      '0x3d1405001628C60807Ec54Fcb8304B0Bb42AD7Dc',
+      '0xfB228406B963C602850aFa33cb63B63b01F37E82',
       {
-        from: '0x6E9Aeb9f30b3a45cBb426D583c18EcD0F4b1BEd5',
+        from: '0x307196e7Becd04E142Ade07d5deea981a072ddf0',
         gas: 1e6,
       },
     );

@@ -3,7 +3,7 @@ import { VNode } from 'vue';
 import style from './index.module.scss';
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
-import DepositJson from '@/views/home/Deposit.json';
+import DepositJson from '@/abi/Deposit.json';
 import Moment from 'moment';
 
 @Component
@@ -13,27 +13,23 @@ export default class ViewMy extends Vue {
 
   private list: any[] = [];
 
-  private async updateTable(index: number) {
+  private async updateTable() {
     console.log(this.depositContract);
-    const rst = await this.depositContract.methods.depositSlips(
-      '0x6E9Aeb9f30b3a45cBb426D583c18EcD0F4b1BEd5',
-      index,
-    ).call();
-    this.list = this.list.concat([rst]);
-    console.log(this.list);
+    const rst = await this.depositContract.methods.getMyDepositSlips().call();
+    this.list = rst;
   }
 
   private mounted() {
     this.web3 = new Web3('ws://127.0.0.1:7545');
     this.depositContract = new  this.web3.eth.Contract(
       DepositJson.abi as any,
-      '0x3d1405001628C60807Ec54Fcb8304B0Bb42AD7Dc',
+      '0xfB228406B963C602850aFa33cb63B63b01F37E82',
       {
-        from: '0x6E9Aeb9f30b3a45cBb426D583c18EcD0F4b1BEd5',
+        from: '0x307196e7Becd04E142Ade07d5deea981a072ddf0',
         gas: 1e8,
       },
     );
-    this.updateTable(0);
+    this.updateTable();
   }
 
   private get autoColumns() {
@@ -81,17 +77,13 @@ export default class ViewMy extends Vue {
     return this.list;
   }
 
-  private index = 0;
-
   private handleClick() {
-    this.updateTable(this.index);
+    this.updateTable();
   }
 
   public render(): VNode {
     return (
       <div class={style.view}>
-        <a-input-number v-model={this.index} />
-        <a-button type="primary" onClick={this.handleClick}>确定</a-button>
         <a-table
           size="middle"
           columns={this.autoColumns}
