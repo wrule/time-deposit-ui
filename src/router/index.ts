@@ -33,6 +33,11 @@ const routes: Array<RouteConfig> = [
     name: 'my',
     component: () => import('@/views/my'),
   },
+  {
+    path: '/web3',
+    name: 'web3',
+    component: () => import('@/views/web3'),
+  },
 ]
 
 const router = new VueRouter({

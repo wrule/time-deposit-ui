@@ -6,17 +6,42 @@ import { Contract } from 'web3-eth-contract';
 import DepositJson from '@/abi/Deposit.json';
 import Moment from 'moment';
 
+interface DepositSlip {
+  index: number;
+  isETH: boolean;
+  valid: boolean;
+  contractAddr: string;
+  amount: string;
+  createTime: string;
+  expireDate: string;
+}
+
 @Component
 export default class ViewMy extends Vue {
   private web3: Web3 = null as any;
   private depositContract: Contract = null as any;
 
-  private list: any[] = [];
+  private depositSlips: DepositSlip[] = [];
+
+  private loading = true;
 
   private async updateTable() {
-    const rst = await this.depositContract.methods.getMyDepositSlips().call();
-    this.list = rst;
-    console.log(this.list);
+    this.loading = true;
+    try {
+      const list: any[] = await this.depositContract.methods.getMyDepositSlips().call();
+      this.depositSlips = list.map((item, index) => ({
+        index,
+        isETH: item.isETH,
+        valid: item.valid,
+        contractAddr: item.contractAddr,
+        amount: item.amount,
+        createTime: item.createTime,
+        expireDate: item.expireDate,
+      }));
+    } catch(e) {
+      console.error(e);
+    }
+    this.loading = false;
   }
 
   private mounted() {
@@ -74,54 +99,68 @@ export default class ViewMy extends Vue {
   }
 
   private get autoData() {
-    return this.list;
+    return (this.depositSlips || []).reverse();
   }
 
-  private handleClick() {
-    this.updateTable();
-  }
-
-  private handleRedemptionClick(index: number) {
-    this.redemption(index);
+  private handleRedemptionClick(row: DepositSlip) {
+    this.redemption(row.index);
   }
 
   private async redemption(index: number) {
-    const rst = await this.depositContract.methods.redemption(index).call();
-    console.log(rst);
-    // this.updateTable();
+    try {
+      const rst: any = await this.depositContract.methods.redemption(index).send({
+        gas: 1e6,
+      });
+      if (rst.status) {
+        this.$message.success('定期赎回成功');
+        this.updateTable();
+      }
+      return;
+    } catch(e) {
+      console.error(e);
+    }
+    this.$message.error('定期赎回失败');
+  }
+
+  private redemptionDisabled(row: DepositSlip) {
+    return !row.valid || Number(new Date()) < Number(row.expireDate) * 1000;
   }
 
   public render(): VNode {
     return (
       <div class={style.view}>
-        <a-table
-          size="middle"
-          columns={this.autoColumns}
-          dataSource={this.autoData}
-          scopedSlots={{
-            isETH: (value: any) => {
-              return <span>{value ? 'ETH' : 'ERC20代币'}</span>;
-            },
-            createTime: (value: number) => {
-              return <span>{Moment(Number(value) * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>;
-            },
-            expireDate: (value: number) => {
-              return <span>{Moment(Number(value) * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>;
-            },
-            valid: (value: any) => {
-              return value ? <a-button size="small">有效</a-button> :
-                <a-button size="small" disabled>无效</a-button>;
-            },
-            opts: (value: any, row: any, index: number) => {
-              return <a-button
-                type="link"
-                size="small"
-                onClick={() => this.handleRedemptionClick(index)}>
-                赎回
-              </a-button>;
-            },
-          }}>
-        </a-table>
+        <a-spin spinning={this.loading}>
+          <a-table
+            size="middle"
+            rowKey="index"
+            columns={this.autoColumns}
+            dataSource={this.autoData}
+            scopedSlots={{
+              isETH: (value: any) => {
+                return <span>{value ? 'ETH' : 'ERC20代币'}</span>;
+              },
+              createTime: (value: number) => {
+                return <span>{Moment(Number(value) * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>;
+              },
+              expireDate: (value: number) => {
+                return <span>{Moment(Number(value) * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>;
+              },
+              valid: (value: any) => {
+                return value ? <a-button size="small">有效</a-button> :
+                  <a-button size="small" disabled>无效</a-button>;
+              },
+              opts: (row: DepositSlip) => {
+                return <a-button
+                  type="link"
+                  size="small"
+                  disabled={this.redemptionDisabled(row)}
+                  onClick={() => this.handleRedemptionClick(row)}>
+                  赎回
+                </a-button>;
+              },
+            }}>
+          </a-table>
+        </a-spin>
       </div>
     );
   }

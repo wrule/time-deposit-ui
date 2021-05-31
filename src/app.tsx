@@ -10,7 +10,7 @@ export default class App extends Vue {
       <a-config-provider locale={zhCN}>
         <a-layout class={style.app}>
           <a-layout-header class={style.header}>
-            <span class={style.name}>鸡毛区块链银行（营业部）</span>
+            <span class={style.name}></span>
           </a-layout-header>
           <a-layout>
             <a-layout-sider class={style.sider}>
