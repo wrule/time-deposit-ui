@@ -10,7 +10,6 @@ interface Form {
 
 @Component
 export default class ViewERC20 extends Vue {
-
   private form: Form = {
     address: null,
     amount: null,
